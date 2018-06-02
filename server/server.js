@@ -36,12 +36,8 @@ app.get('/todos',(req,res)=>{
 
 	Todo.find().then((todos) => {
 
-		//res.send({todos});
-		res.render('index.hbs',{
-
-			todos: todos
-
-		});
+		res.send({todos});
+		
 
 	},(err)=>{
 

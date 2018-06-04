@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-const hbs = require('hbs');
+//const hbs = require('hbs');
+const _ = require('lodash');
 
 var {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
@@ -122,6 +123,37 @@ app.delete('/remove/:id',(req,res) => {
 
  			
  	}
+
+});
+
+app.patch('/todos/:id',(req,res) => {
+
+	var id = req.params.id;
+	var body = _.pick(req.body,['name','completed']);
+
+	if(!ObjectID.isValid(id)){
+
+ 		return res.status(404).send('Invalid Id');
+
+ 	}
+
+	Todo.findByIdAndUpdate(id,{ $set: {name: body.name,completed: body.completed}} , {new : true}).then((todo)=>{
+
+		if(!todo){
+
+			return res.send("Todo not found with this id");
+		}
+		res.send(todo);
+
+
+
+
+
+	}).catch((e) => {
+
+		res.status(400).send(e);
+
+	});
 
 });
 

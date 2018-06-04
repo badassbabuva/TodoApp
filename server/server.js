@@ -96,7 +96,7 @@ app.get('/todos/:id',(req,res) => {
 
 });
 
-app.get('/remove/:id',(req,res) => {
+app.delete('/remove/:id',(req,res) => {
 
  	var id = req.params.id;
  	if(!ObjectID.isValid(id)){

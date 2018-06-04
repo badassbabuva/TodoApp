@@ -50,20 +50,27 @@ app.get('/todos',(req,res)=>{
 
 app.post('/user',(req,res) => {
 
+	var body = _.pick(req.body,['email','password']);
 	var user = new User({
 
-		email: req.body.email
+		email: req.body.email,
+		password: req.body.password
 
 	});
 
 	user.save().then((user) => {
 
-		res.send(user);
+		return user.generateAuthToken();
 
 	},(err)=>{
 
 		res.status(400).send(err);
 
+	}).then((token) => {
+		res.header('x-auth',token).send(user);
+	},(err)=> {
+	
+		res.status(400).send(err);		
 	});
 
 });
@@ -144,11 +151,6 @@ app.patch('/todos/:id',(req,res) => {
 			return res.send("Todo not found with this id");
 		}
 		res.send(todo);
-
-
-
-
-
 	}).catch((e) => {
 
 		res.status(400).send(e);
@@ -156,6 +158,7 @@ app.patch('/todos/:id',(req,res) => {
 	});
 
 });
+
 
 
 app.listen(port,() => {

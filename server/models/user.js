@@ -92,6 +92,33 @@ userSchema.statics.findByToken = function (token) {
 		'tokens.access':'auth'
 	});
 };
+
+userSchema.statics.findbyCredentials = function(email,password){
+
+	var User = this;
+	return User.findOne({email}).then((user)=> {
+
+		if(!user){
+		
+			return Promise.reject();
+		}
+		//if user found
+		return new Promise((resolve,reject) => {
+
+			bcrypt.compare(body.password,user.password,(err,res)=>{
+
+				if(res){
+
+					resolve(user);
+				}
+				else{
+
+					reject();
+				}
+			}); 
+		}
+	});
+};  
 //it wil run before save event 
 userSchema.pre('save', function (next){
 

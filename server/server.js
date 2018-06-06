@@ -81,10 +81,25 @@ app.post('/user',(req,res) => {
 app.post('/user/login',(req,res) => {
 
 	var body = _.pick(req.body,['email','password']);
+	
+	User.findbyCredentials(body.email,body.password).then((user) => {
+
+		res.send(user.email);
+
+	}).catch((e)=>{
+
+		res.status(400).send();
+
+	});
+
+});
+
+/*
+var body = _.pick(req.body,['email','password']);
 
 	User.findOne({email: body.email}).then((user) => {
-				
-			if(!user){
+			
+				if(!user){
 				res.send("Invalid email id");
 			}
 			else{
@@ -101,13 +116,12 @@ app.post('/user/login',(req,res) => {
 				});
 
 			}
-				
+
 	}).catch((e) => {
 		res.status(404).send(e);
 	});
-});
-
-
+		
+	*/
 //get todo/s by id
 app.get('/todos/:id',(req,res) => {
 

@@ -105,7 +105,7 @@ userSchema.statics.findbyCredentials = function(email,password){
 		//if user found
 		return new Promise((resolve,reject) => {
 
-			bcrypt.compare(body.password,user.password,(err,res)=>{
+			bcrypt.compare(password,user.password,(err,res)=>{
 
 				if(res){
 
@@ -116,7 +116,7 @@ userSchema.statics.findbyCredentials = function(email,password){
 					reject();
 				}
 			}); 
-		}
+		});
 	});
 };  
 //it wil run before save event 

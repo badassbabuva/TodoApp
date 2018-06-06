@@ -84,7 +84,7 @@ app.post('/user/login',(req,res) => {
 	
 	User.findbyCredentials(body.email,body.password).then((user) => {
 
-		res.send(user);
+		res.send(user.email);
 
 	}).catch((e)=>{
 

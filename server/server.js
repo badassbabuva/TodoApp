@@ -159,6 +159,35 @@ app.patch('/todos/:id',(req,res) => {
 
 });
 
+var authenticate = (req,res,next) => {
+
+	var token = req.header('x-auth');
+
+	User.findByToken(token).then((user) => {
+
+		if(!user){
+
+			return res.send("Data Not Found");
+
+		}
+
+		req.user = user;
+		req.token = token;
+		next();
+		 
+
+	}).catch((e) => {
+		res.status(401).send();
+	});
+
+
+};
+
+app.get('/user/me',authenticate,(req,res) => {
+
+	res.send(req.user);
+});
+
 
 
 app.listen(port,() => {

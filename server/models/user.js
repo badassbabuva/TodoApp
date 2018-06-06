@@ -3,6 +3,7 @@ const validator = require('validator');
 var Schema = mongoose.Schema;
 const jwt= require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 var userSchema = new Schema({
 
@@ -51,6 +52,7 @@ userSchema.methods.toJSON = function (){
 
 };
 
+//.methods means instance method
 userSchema.methods.generateAuthToken = function (){
 
 	var user = this;
@@ -70,6 +72,45 @@ userSchema.methods.generateAuthToken = function (){
 	});
 
 };
+//.statics means Model method
+userSchema.statics.findByToken = function (token) {
+
+	var User = this;
+	var decoded;
+
+	try {
+
+		decoded=jwt.verify(token, '123abc');
+	} 
+	catch(e) {
+
+		throw e;
+	}
+	return User.findOne({
+		'_id':decoded._id,
+		'tokens.token': token,
+		'tokens.access':'auth'
+	});
+};
+//it wil run before save event 
+userSchema.pre('save', function (next){
+
+	var user = this;
+	if(user.isModified('password')){
+
+		bcrypt.genSalt(10,(err,salt) => {
+			bcrypt.hash(user.password,salt,(err,hash) => {
+				user.password = hash;
+				next();
+			});
+		});
+	} 
+	else
+	{
+		next();
+	}
+
+});
 
 var User = mongoose.model('User',userSchema);
 
